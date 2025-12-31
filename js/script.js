@@ -71,11 +71,17 @@ randomWords.forEach((word) => {
 
 // Ảnh dùng cho hiệu ứng nổ (hiển thị hình ảnh ngẫu nhiên tại điểm nổ)
 const imageSources = [
-	"./images/image1.jpeg",
-	"./images/image2.jpeg",
-	"./images/image3.jpeg",
-	"./images/image4.jpeg",
-	"./images/image5.jpeg",
+	"./images/image1.jpg",
+	"./images/image2.jpg",
+	"./images/image3.jpg",
+	"./images/image4.jpg",
+	"./images/image5.jpg",
+	"./images/image6.jpg",
+	"./images/image7.jpg",
+	"./images/image8.jpg",
+	"./images/image9.jpg",
+	"./images/image10.jpg",
+
 ];
 const loadedImages = [];
 const imageBursts = [];
@@ -547,12 +553,15 @@ store.subscribe(handleStateChange);
 const WISH_MESSAGES = [
 	"Năm mới an khang thịnh vượng",
 	"Năm mới bình an",
-	"Chúc mọi điều ước của em đều trở thành hiện thực ✨",
+	"Chúc mọi điều ước của bé Phương đều trở thành hiện thực ✨",
 	"Chúc gia đình em luôn bình an và hạnh phúc ❤️",
-	"Chúc em luôn khỏe mạnh và tràn đầy năng lượng 💪",
+	"Chúc bé Phương luôn khỏe mạnh và tràn đầy năng lượng 💪",
 	"Chúc công việc thuận lợi, thăng tiến không ngừng 🚀",
-	"Chúc em luôn mỉm cười và yêu đời mỗi ngày 😊",
+	"Chúc bé Phương luôn mỉm cười và yêu đời mỗi ngày 😊",
 	"Chúc em gặp nhiều may mắn và niềm vui 🎉",
+	"Chúc tình yêu của anh một năm mới thật nhiều niềm vui, ít muộn phiền và yêu anh nhiều hơn mỗi ngày ❤️",
+	"Năm mới không cần gì nhiều, chỉ cần mỗi ngày đều có em là đủ rồi.",
+	"Cảm ơn bé Phương đã đến bên anh trong năm vừa qua. Năm mới này, anh mong mình vẫn nắm tay nhau thật lâu.",
 ];
 
 // Sinh 1 câu chúc bay lên
