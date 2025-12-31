@@ -529,8 +529,10 @@ function handleStateChange(state, prevState) {
 	if (canPlaySound !== canPlaySoundPrev) {
 		if (canPlaySound) {
 			soundManager.resumeAll();
+			backgroundMusic.play(); // Phát nhạc nền
 		} else {
 			soundManager.pauseAll();
+			backgroundMusic.pause(); // Tạm dừng nhạc nền
 		}
 	}
 
@@ -3071,6 +3073,37 @@ const Spark = {
 	},
 };
 
+// Nhạc nền
+const backgroundMusic = {
+	audio: null,
+	
+	init() {
+		this.audio = new Audio('./audio/i-wanna-be.mp3');
+		this.audio.loop = true; // Lặp lại liên tục
+		this.audio.volume = 0.3; // Âm lượng 30%
+	},
+	
+	play() {
+		if (this.audio && canPlaySoundSelector()) {
+			this.audio.play().catch(err => {
+				console.log('Background music play failed:', err);
+			});
+		}
+	},
+	
+	pause() {
+		if (this.audio) {
+			this.audio.pause();
+		}
+	},
+	
+	setVolume(volume) {
+		if (this.audio) {
+			this.audio.volume = volume;
+		}
+	}
+};
+
 //音效管理器
 const soundManager = {
 	baseURL: "./audio/",
@@ -3243,11 +3276,18 @@ if (IS_HEADER) {
 } else {
 	// Allow status to render, then preload assets and start app.
 	setTimeout(() => {
+		// Khởi tạo nhạc nền
+		backgroundMusic.init();
+		
 		// Tải trước âm thanh và ảnh nổ
 		var promises = [soundManager.preload(), preloadImages()];
 
 		// 在 soundManager 加载完毕后调用 init
-		Promise.all(promises).then(init, (reason) => {
+		Promise.all(promises).then(() => {
+			init();
+			// Phát nhạc nền sau khi khởi tạo
+			backgroundMusic.play();
+		}, (reason) => {
 			console.log("资源文件加载失败");
 			init();
 			return Promise.reject(reason);
