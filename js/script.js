@@ -561,7 +561,7 @@ const WISH_MESSAGES = [
 	"Chúc em gặp nhiều may mắn và niềm vui 🎉",
 	"Chúc tình yêu của anh một năm mới thật nhiều niềm vui, ít muộn phiền và yêu anh nhiều hơn mỗi ngày ❤️",
 	"Năm mới không cần gì nhiều, chỉ cần mỗi ngày đều có em là đủ rồi.",
-	"Cảm ơn bé Phương đã đến bên anh trong năm vừa qua. Năm mới này, anh mong mình vẫn nắm tay nhau thật lâu.",
+	"Cảm ơn bé Phương đã đến bên anh trong năm vừa qua. Năm mới này, anh mong mình vẫn nắm tay nhau thật lâu!.",
 ];
 
 // Sinh 1 câu chúc bay lên
