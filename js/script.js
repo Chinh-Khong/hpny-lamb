@@ -529,10 +529,8 @@ function handleStateChange(state, prevState) {
 	if (canPlaySound !== canPlaySoundPrev) {
 		if (canPlaySound) {
 			soundManager.resumeAll();
-			backgroundMusic.play(); // Phát nhạc nền
 		} else {
 			soundManager.pauseAll();
-			backgroundMusic.pause(); // Tạm dừng nhạc nền
 		}
 	}
 
@@ -3073,37 +3071,6 @@ const Spark = {
 	},
 };
 
-// Nhạc nền
-const backgroundMusic = {
-	audio: null,
-	
-	init() {
-		this.audio = new Audio('./audio/i-wanna-be.mp3');
-		this.audio.loop = true; // Lặp lại liên tục
-		this.audio.volume = 0.3; // Âm lượng 30%
-	},
-	
-	play() {
-		if (this.audio && canPlaySoundSelector()) {
-			this.audio.play().catch(err => {
-				console.log('Background music play failed:', err);
-			});
-		}
-	},
-	
-	pause() {
-		if (this.audio) {
-			this.audio.pause();
-		}
-	},
-	
-	setVolume(volume) {
-		if (this.audio) {
-			this.audio.volume = volume;
-		}
-	}
-};
-
 //音效管理器
 const soundManager = {
 	baseURL: "./audio/",
@@ -3139,7 +3106,17 @@ const soundManager = {
 			playbackRateMax: 1,
 			fileNames: ["crackle-sm-1.mp3"],
 		},
+		backgroundMusic: {
+			volume: 0.5,
+			playbackRateMin: 1,
+			playbackRateMax: 1,
+			fileNames: ["i-wanna-be.mp3"],
+		},
 	},
+
+	// Background music source node
+	backgroundMusicSource: null,
+	backgroundMusicGain: null,
 
 	preload() {
 		const allFilePromises = [];
@@ -3185,9 +3162,12 @@ const soundManager = {
 
 	pauseAll() {
 		this.ctx.suspend();
+		this.stopBackgroundMusic();
 	},
 
 	resumeAll() {
+		// Start background music when sound is enabled
+		this.startBackgroundMusic();
 		// Play a sound with no volume for iOS. This 'unlocks' the audio context when the user first enables sound.
 		this.playSound("lift", 0);
 		// Chrome mobile requires interaction before starting audio context.
@@ -3260,6 +3240,46 @@ const soundManager = {
 		gainNode.connect(this.ctx.destination);
 		bufferSource.start(0);
 	},
+
+	// Start background music (looping)
+	startBackgroundMusic() {
+		// Stop existing background music if any
+		this.stopBackgroundMusic();
+
+		const bgMusic = this.sources.backgroundMusic;
+		if (!bgMusic || !bgMusic.buffers || bgMusic.buffers.length === 0) {
+			return;
+		}
+
+		// Create gain node for volume control
+		this.backgroundMusicGain = this.ctx.createGain();
+		this.backgroundMusicGain.gain.value = bgMusic.volume;
+
+		// Create and configure buffer source
+		this.backgroundMusicSource = this.ctx.createBufferSource();
+		this.backgroundMusicSource.buffer = bgMusic.buffers[0];
+		this.backgroundMusicSource.loop = true; // Enable looping
+		this.backgroundMusicSource.playbackRate.value = 1;
+
+		// Connect nodes
+		this.backgroundMusicSource.connect(this.backgroundMusicGain);
+		this.backgroundMusicGain.connect(this.ctx.destination);
+
+		// Start playing
+		this.backgroundMusicSource.start(0);
+	},
+
+	// Stop background music
+	stopBackgroundMusic() {
+		if (this.backgroundMusicSource) {
+			try {
+				this.backgroundMusicSource.stop();
+			} catch (e) {
+				// Already stopped
+			}
+			this.backgroundMusicSource = null;
+		}
+	},
 };
 
 // imageTemplateManager.preload().then(() => {
@@ -3276,17 +3296,12 @@ if (IS_HEADER) {
 } else {
 	// Allow status to render, then preload assets and start app.
 	setTimeout(() => {
-		// Khởi tạo nhạc nền
-		backgroundMusic.init();
-		
 		// Tải trước âm thanh và ảnh nổ
 		var promises = [soundManager.preload(), preloadImages()];
 
 		// 在 soundManager 加载完毕后调用 init
 		Promise.all(promises).then(() => {
 			init();
-			// Phát nhạc nền sau khi khởi tạo
-			backgroundMusic.play();
 		}, (reason) => {
 			console.log("资源文件加载失败");
 			init();
